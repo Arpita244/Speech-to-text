@@ -1,0 +1,254 @@
+/* Root Variables */
+:root {
+  --bg-gradient: linear-gradient(135deg, #ff4081, #9c27b0); /* Vibrant pink to purple gradient */
+  --glass-bg: rgba(255, 255, 255, 0.3); /* Light frosted effect */
+  --text-color: #fff; /* White text for high contrast */
+  --highlight-color: #00bcd4; /* Vibrant cyan accent */
+  --btn-bg: #ff5722; /* Bold orange for buttons */
+  --btn-hover: #e64a19; /* Darker orange on hover */
+  --btn-text: white;
+  --btn-disabled: #bdbdbd; /* Grey for disabled buttons */
+  --header-bg: rgba(0, 0, 0, 0.8);
+  --error-color: #f44336; /* Bright red for error messages */
+  --clear-bg: #ff1744; /* Red for clear button */
+  --blur: 12px;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --border-radius: 15px;
+  --font-family: "Poppins", sans-serif;
+}
+
+.dark {
+  --bg-gradient: linear-gradient(135deg, #212121, #424242);
+  --glass-bg: rgba(0, 0, 0, 0.2);
+  --text-color: #e0e0e0;
+  --highlight-color: #03dac6;
+  --btn-bg: #bb86fc;
+  --btn-hover: #7e57c2;
+  --clear-bg: #cf6679;
+}
+
+/* Universal Styles */
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--bg-gradient);
+  color: var(--text-color);
+  transition: all 0.5s ease-in-out;
+  overflow-x: hidden;
+}
+
+.app {
+  max-width: 900px;
+  margin: 50px auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: 0 15px 40px var(--shadow-color);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.app:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 60px var(--shadow-color);
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--header-bg);
+  color: var(--text-color);
+  padding: 15px 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+  color: var(--highlight-color);
+  text-shadow: 0 0 10px var(--highlight-color);
+}
+
+header button {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+header button:hover {
+  background: var(--btn-hover);
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.controls .btn {
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  padding: 12px 25px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.controls .btn:hover:not(:disabled) {
+  background-color: var(--btn-hover);
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.controls .btn:disabled {
+  background-color: var(--btn-disabled);
+  cursor: not-allowed;
+}
+
+.controls .btn.clear {
+  background-color: var(--clear-bg);
+}
+
+.controls .btn.clear:hover {
+  background-color: var(--error-color);
+}
+
+/* Settings */
+.settings {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.settings label {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.settings select {
+  margin-left: 10px;
+  padding: 10px 10px;
+  font-size: 1rem;
+  border: 2px solid var(--btn-bg);
+  border-radius: var(--border-radius);
+  background-color: var(--glass-bg);
+  color: var(--text-color);
+  transition: border-color 0.3s ease;
+}
+
+.settings select:focus {
+  border-color: var(--btn-hover);
+  outline: none;
+}
+
+/* Error Message */
+.error {
+  color: var(--error-color);
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 15px 0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Transcript Box */
+.transcript-box {
+  width: 100%;
+  height: 200px;
+  border: 2px solid var(--btn-bg);
+  border-radius: var(--border-radius);
+  padding: 5px;
+  font-size: 1rem;
+  background-color: var(--glass-bg);
+  color: var(--text-color);
+  resize: none;
+  outline: none;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.3s ease;
+}
+
+.transcript-box:focus {
+  border-color: var(--btn-hover);
+}
+
+/* Word Count */
+.word-count {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 15px;
+  color: var(--highlight-color);
+  font-weight: bold;
+}
+
+/* Saved Transcripts */
+.saved-transcripts {
+  margin-top: 40px;
+}
+
+.saved-transcripts h2 {
+  font-size: 1.8rem;
+  color: var(--btn-bg);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.saved-transcripts ul {
+  list-style: none;
+  padding: 0;
+}
+
+.saved-transcripts li {
+  background: var(--glass-bg);
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.saved-transcripts li:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.language-selector {
+  color: #000000;  /* Dark Black text color */
+  background-color: #f8f8f8;  /* Light background to contrast the dark text */
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 16px;
+  width: 200px;
+  border-radius: 5px;
+}
+
+.language-selector option {
+  color: #000000;  /* Dark Black text color for options */
+}
