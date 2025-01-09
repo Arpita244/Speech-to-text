@@ -60,7 +60,9 @@ const App = () => {
   const [error, setError] = useState("");
   const [language, setLanguage] = useState("en-US");
   const [savedTranscripts, setSavedTranscripts] = useState([]);
-  const [isLocked, setIsLocked] = useState(false);  // Lock the UI when recording starts
+  const [isLocked, setIsLocked] = useState(false); // Lock the UI when recording starts
+  const [translation, setTranslation] = useState(""); // Translated text
+  const [targetLanguage, setTargetLanguage] = useState("es"); // Default target language for translation
   const recognitionRef = useRef(null);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ const App = () => {
 
     recognitionRef.current.onstart = () => {
       setError("");
-      setIsLocked(true);  // Lock UI on speech start
+      setIsLocked(true); // Lock UI on speech start
     };
     recognitionRef.current.onresult = (event) => {
       const speechResult = Array.from(event.results)
@@ -87,7 +89,7 @@ const App = () => {
     recognitionRef.current.onerror = (event) => setError(`Error: ${event.error}`);
     recognitionRef.current.onend = () => {
       setIsListening(false);
-      setIsLocked(false);  // Unlock UI when speech recognition ends
+      setIsLocked(false); // Unlock UI when speech recognition ends
     };
   }, [language]);
 
@@ -108,36 +110,36 @@ const App = () => {
   const clearTranscript = () => {
     if (!isLocked) {
       setTranscript("");
+      setTranslation("");
     }
   };
 
-  const saveTranscript = () => {
-    if (!isLocked && transcript) {
-      setSavedTranscripts([...savedTranscripts, transcript]);
-      setTranscript("");
-    }
-  };
-
-  const copyToClipboard = () => {
-    if (!isLocked && transcript) {
-      navigator.clipboard.writeText(transcript);
-      alert("Transcript copied to clipboard!");
-    }
-  };
-
-  const downloadTranscript = () => {
-    if (!isLocked && transcript) {
-      const blob = new Blob([transcript], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "transcript.txt";
-      link.click();
+  const translateText = async () => {
+    if (!transcript) return;
+    try {
+      const response = await fetch(
+        `https://translation.googleapis.com/language/translate/v2?key=YOUR_GOOGLE_TRANSLATE_API_KEY`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            q: transcript,
+            target: targetLanguage
+          })
+        }
+      );
+      const data = await response.json();
+      if (data && data.data && data.data.translations) {
+        setTranslation(data.data.translations[0].translatedText);
+      }
+    } catch (err) {
+      console.error("Translation error:", err);
     }
   };
 
   return (
     <div className="app">
+      {/* Existing Header */}
       <header>
         <h1 className="neon-title">Voice AI Transcriber</h1>
         <button
@@ -148,6 +150,7 @@ const App = () => {
         </button>
       </header>
 
+      {/* Existing Controls */}
       <div className="controls">
         <button
           className="btn neon-btn"
@@ -172,34 +175,20 @@ const App = () => {
         </button>
         <button
           className="btn neon-btn"
-          onClick={saveTranscript}
-          disabled={isLocked || !transcript}
+          onClick={translateText}
+          disabled={!transcript || isLocked}
         >
-          Save
-        </button>
-        <button
-          className="btn neon-btn"
-          onClick={copyToClipboard}
-          disabled={isLocked || !transcript}
-        >
-          Copy
-        </button>
-        <button
-          className="btn neon-btn"
-          onClick={downloadTranscript}
-          disabled={isLocked || !transcript}
-        >
-          Download
+          Translate
         </button>
       </div>
 
-      <div className="settings">
+      {/* Translation Section */}
+      <div className="translation-section">
         <label>
-          Language:
+          Translate to:
           <select
-            className="language-selector"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            value={targetLanguage}
+            onChange={(e) => setTargetLanguage(e.target.value)}
             disabled={isLocked}
           >
             {languages.map((lang) => (
@@ -209,31 +198,21 @@ const App = () => {
             ))}
           </select>
         </label>
+        <textarea
+          className="translation-box neon-textarea"
+          value={translation}
+          readOnly
+          placeholder="Translated text will appear here..."
+        ></textarea>
       </div>
 
-      {error && <div className="error neon-error">{error}</div>}
-
+      {/* Existing Transcript Box */}
       <textarea
         className="transcript-box neon-textarea"
         value={transcript}
         readOnly
         placeholder="Your speech will appear here..."
       ></textarea>
-
-      <div className="word-count">
-        Words: {transcript.split(" ").filter(Boolean).length} | Characters: {transcript.length}
-      </div>
-
-      {savedTranscripts.length > 0 && (
-        <div className="saved-transcripts">
-          <h2 className="neon-title">Saved Transcripts</h2>
-          <ul>
-            {savedTranscripts.map((text, index) => (
-              <li key={index} className="neon-item">{text}</li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
